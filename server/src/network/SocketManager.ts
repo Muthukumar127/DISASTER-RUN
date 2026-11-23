@@ -20,7 +20,7 @@ export class SocketManager { rm = new RoomManager(); rl = new RateLimiter();
     s.on(E.ready, (v: boolean) => { const r = this.room(s), m = r?.members.get(s.id); if (!r || !m || r.phase !== 'lobby') return; m.ready = !!v; this.push(r); });
     s.on(E.map, (id: string) => { const r = this.room(s); if (!r || r.host !== s.id || r.phase !== 'lobby') return; const mp = MAPS.find(m => m.id === id); if (!mp) return; if (!mp.playable) return s.emit(E.error, mp.name + ' is coming soon'); r.map = id; this.push(r); });
     s.on(E.start, () => { const r = this.room(s); if (!r || r.host !== s.id || r.phase !== 'lobby') return; const wait = [...r.members.values()].filter(m => m.id !== r.host && !m.ready);
-      if (wait.length) return s.emit(E.error, 'Waiting for: ' + wait.map(m => m.name).join(', ')); r.phase = 'play'; r.session = new GameSession(this.io, r); this.io.to(r.code).emit(E.started, { map: r.map, spawn: r.session.spawns() }); this.push(r); });
+      if (wait.length) return s.emit(E.error, 'Waiting for: ' + wait.map(m => m.name).join(', ')); r.phase = 'play'; r.session = new GameSession(this.io, r); this.io.to(r.code).emit(E.started, { map: r.map, spawn: r.session.spawns(), seq: r.session.seq }); this.push(r); });
     s.on(E.input, (m: InputMsg) => { const r = this.room(s); if (r?.session && this.rl.ok(s.id, 40)) r.session.input(s.id, m); });
     s.on('disconnect', () => { const r = this.room(s); this.rl.drop(s.id); if (!r) return; r.members.delete(s.id); r.session?.remove(s.id); if (!r.members.size) return void this.rm.rooms.delete(r.code);
       if (r.host === s.id) r.host = [...r.members.keys()][0]; this.push(r); }); } }

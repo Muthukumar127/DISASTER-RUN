@@ -17,6 +17,11 @@ A room code only works against ONE running Node server – all players must open
 VPS): `npm run build`, start command `npm start`, PORT from env. Use https/wss (the host provides it). Self-hosting at home needs port-forwarding
 (TCP 3000) + firewall rule; players behind NAT need no setup because the client connects OUT to the server (no peer-to-peer in this build).
 
+## Gameplay (v0.2)
+3 compact town maps (Dusty Town, Lava Village, Frozen Harbor), 12 enterable buildings each. 30 s prep countdown with the list of coming disasters, then 6 disasters
+(5 s warning, 15 s active). Indoors is safe from everything except earthquakes (run outside!). Disasters: wildfire, lava, tornado, tsunami, landslide,
+thunderstorm, meteor shower, hailstorm, acid rain, sandstorm, blizzard, heatwave, hurricane, earthquake.
+
 ## Status (honest)
 DONE & tested (server smoke test + typecheck): private rooms, 6-char codes, 4-slot lobby, character select (MAX/NEO/COCO/REX unique), ready, host/start,
 map select, disconnect + host migration, rate limiting, input validation, server-authoritative movement (speed/bounds/jump clamped), state sync.
